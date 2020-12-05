@@ -1,0 +1,214 @@
+Q - Demo
+
+
+This is a demo task.
+
+Write a function:
+
+function solution(A);
+
+that, given an array A of N integers, returns the smallest positive integer (greater than 0) that does not occur in A.
+
+For example, given A = [1, 3, 6, 4, 1, 2], the function should return 5.
+
+Given A = [1, 2, 3], the function should return 4.
+
+Given A = [−1, −3], the function should return 1.
+
+Write an efficient algorithm for the following assumptions:
+
+N is an integer within the range [1..100,000];
+each element of array A is an integer within the range [−1,000,000..1,000,000].
+Copyright 2009–2019 by Codility Limited. All Rights Reserved. Unauthorized copying, publication or disclosure prohibited.
+
+
+
+
+
+
+// you can write to stdout for debugging purposes, e.g.
+// console.log('this is a debug message');
+
+function solution(A) {
+    let val = Array(A.length).fill(false);
+    A.forEach(function(e) {
+        if (e > 0 && e-1 < A.length) {
+            val[e-1] = true;
+        }
+    })
+    
+    for(let sol in val) {
+        if (val[sol] === false) {
+            return parseInt(sol)+1;
+        }   
+    }
+    
+    return A.length+1;
+    // write your code in JavaScript (Node.js 8.9.4)
+}
+
+https://app.codility.com/demo/results/demoCD2XD2-E5W/
+
+
+=--------------=--------------=--------------=--------------=--------------=--------------=--------------=--------------=--------------=--------------=--------------=--------------
+
+// you can write to stdout for debugging purposes, e.g.
+// console.log('this is a debug message');
+
+
+var charCodeZero = "0".charCodeAt(0);
+var charCodeNine = "9".charCodeAt(0);
+function isNumber(S, start) {
+    if (S.charCodeAt(start) >= charCodeZero && S.charCodeAt(start) <= charCodeNine) {
+        return true;
+    }
+    return false;
+}
+
+function getNumber(S, start) {
+    let val = start;
+    for (; val < S.length; val++) {
+        if (!isNumber(S, val)) {
+            break;
+        }
+    }
+    
+
+    return S.substring(start, val)
+}
+
+function solution(S, T) {
+    let s_spot = 0;
+    let t_spot = 0;
+    let s_range = 0;
+    let t_range = 0;
+    
+    while(true) {
+        if (t_spot >= T.length && t_range <= 0) {
+            if (s_spot >= S.length && s_range <= 0) {
+                return true;    
+            } else {
+                return false;
+            }
+        } else if (s_spot >= S.length && s_range <= 0) {
+            if (t_spot >= T.length && t_range <= 0) {
+                return true;    
+            } else {
+                return false;
+            }
+        } else if (s_range > 0 && t_range > 0) {
+            if (s_range < t_range) {
+                t_range -= s_range;
+                s_range = 0;
+            } else {
+                s_range -= t_range;
+                t_range = 0;
+            }
+        } else if (s_range > 0) {
+            if (isNumber(T, t_spot)) {
+                let num = getNumber(T, t_spot);
+                t_spot += num.length;
+                t_range = parseInt(num);
+            } else {
+                s_range--;
+                t_spot++;    
+            }
+        } else if (t_range > 0) {
+            if (isNumber(S, s_spot)) {
+                let num = getNumber(S, s_spot);
+                s_spot += num.length;
+                s_range = parseInt(num);
+            } else {
+                t_range--;
+                s_spot++;    
+            }
+        } else if (isNumber(S, s_spot)) {
+            let num = getNumber(S, s_spot);
+            s_spot += num.length;
+            s_range = parseInt(num);
+        } else if (isNumber(T, t_spot)) {
+            let num = getNumber(T, t_spot);
+            t_spot += num.length;
+            t_range = parseInt(num);
+        } else if (S.charAt(s_spot) === T.charAt(t_spot)) {
+            s_spot++;
+            t_spot++;
+        } else {
+            return false;    
+        }
+    }
+    
+    return true;
+}
+
+
+
+=--------------=--------------=--------------=--------------=--------------=--------------=--------------=--------------=--------------=--------------=--------------=--------------
+
+
+
+
+// you can write to stdout for debugging purposes, e.g.
+// console.log('this is a debug message');
+
+function transform(A, posX, posY, val) {
+    A[posX][posY] = false;
+    if (posX-1 >= 0 && A[posX-1][posY] === val) {
+        transform(A, posX-1, posY, val);
+    }
+    if (posX+1 < A.length && A[posX+1][posY] === val) {
+        transform(A, posX+1, posY, val);
+    }
+    if (posY-1 >= 0 && A[posX][posY-1] === val) {
+        transform(A, posX, posY-1, val);
+    }
+    if (posY+1 < A[posX].length && A[posX][posY+1] === val) {
+        transform(A, posX, posY+1, val);
+    }
+}
+
+function solution(A) {
+    let count = 0;
+    for(let posX = 0; posX < A.length; posX++) {
+        for(let posY = 0; posY < A[posX].length; posY++) {
+            if (A[posX][posY] !== false) {
+                count++;
+                transform(A, posX, posY, A[posX][posY]);
+            }
+        } 
+    }
+    
+    return count;
+}
+
+
+
+=--------------=--------------=--------------=--------------=--------------=--------------=--------------=--------------=--------------=--------------=--------------=--------------
+
+
+
+function solution(n) {
+    d = new Array(30);
+    l = 0;
+    while (n > 0) {
+        d[l] = n % 2;
+        n = Math.floor(n / 2);
+        l += 1;
+    } d = d.filter(val => val !== undefined).reverse();// console.log(d); console.log(l);// No longer returned backwards (Don't think this is required)
+    for (p = 1; p <= Math.floor(l/2); ++p) {
+        ok = true;
+        for (i = 0; i < l - p; ++i) {
+            if (d[i] != d[i + p]) {
+                ok = false;
+                break;
+            }
+        }
+        if (ok) {
+            return p;
+        }
+    }
+    return -1;
+}
+
+
+https://app.codility.com/c/feedback/W8TNPQ-D4M/
